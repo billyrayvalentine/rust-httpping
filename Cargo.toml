@@ -1,0 +1,9 @@
+[package]
+name = "http-ping"
+version = "0.1.0"
+edition = "2021"
+description = "A simple tool to ping HTTP servers and return a HTTP code"
+authors = ["BillyRayValentine <github.com/billyrayvalentine>"]
+
+[dependencies]
+clap = { version = "4.5.20", features = ["derive"] }
