@@ -19,5 +19,4 @@ fn main() {
     let args = Args::parse();
     //println!("Got the filename {}", args.file);
     dbg!(args);
-
 }

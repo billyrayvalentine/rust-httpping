@@ -8,3 +8,8 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: check-added-large-files
+repos:
+-   repo: https://github.com/billyrayvalentine/pre-commit-rust-hook
+    rev: 0.1.0
+    hooks:
+    -   id: rustfmt
