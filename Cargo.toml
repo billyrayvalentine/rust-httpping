@@ -7,3 +7,6 @@ authors = ["BillyRayValentine <github.com/billyrayvalentine>"]
 
 [dependencies]
 clap = { version = "4.5.20", features = ["derive"] }
+req = "0.6.2"
+ureq = "2.10.1"
+url = "2.5.3"
