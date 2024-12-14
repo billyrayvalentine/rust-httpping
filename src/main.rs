@@ -1,3 +1,5 @@
+#![allow(unused_imports, unused_variables)]
+
 // Cli app entry point
 use clap::Parser;
 use std::process;
@@ -24,23 +26,21 @@ fn validate_url_string_error(url: &str) -> Result<(), String> {
     let parsed_url = Url::parse(url).map_err(|e| e.to_string())?;
 
     println!("Got scheme {}", parsed_url.scheme());
-    //if parsed_url.scheme() != "http" || parsed_url.scheme() != "https" {
-    if parsed_url.scheme() != "https" {
-        return Err("Scheme must be http or https".to_string());
+    match parsed_url.scheme() {
+        "http" | "https" => Ok(()),
+        _ => Err("Scheme must be http or https".to_string()),
     }
-
-    Ok(())
 }
 
 fn do_ping(url: &str) -> Result<ureq::Response, ureq::Error> {
     let resp = ureq::request("HEAD", &url).call().or_any_status()?;
-    println!("Response was: {:?}", resp);
+    //dbg!(&resp);
     Ok(resp)
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
-    dbg!(&args);
+    //dbg!(&args);
 
     let url = validate_url_string_error(&args.destination).unwrap_or_else(|error| {
         eprintln!("Error parsing destination: {error:?}");
