@@ -38,8 +38,8 @@ fn test_args_destination_not_http_or_https() {
 #[test]
 fn test_args_destination_valid() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.arg("http://httpbin.org").assert().success();
+    cmd.arg("http://httpbin.org").arg("-c1").assert().success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.arg("https://httpbin.org").assert().success();
+    cmd.arg("https://httpbin.org").arg("-c1").assert().success();
 }

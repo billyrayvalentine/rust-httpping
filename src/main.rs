@@ -5,7 +5,6 @@ use clap::Parser;
 use std::process;
 use ureq::{Error, OrAnyStatus, Response};
 use url::Url;
-//use std::fmt::Error;
 #[derive(Parser, Debug)]
 #[command(version, about, author)]
 
@@ -25,31 +24,50 @@ struct Args {
 fn validate_url_string_error(url: &str) -> Result<(), String> {
     let parsed_url = Url::parse(url).map_err(|e| e.to_string())?;
 
-    println!("Got scheme {}", parsed_url.scheme());
+    //println!("Got scheme {}", parsed_url.scheme());
     match parsed_url.scheme() {
         "http" | "https" => Ok(()),
         _ => Err("Scheme must be http or https".to_string()),
     }
 }
 
-fn do_ping(url: &str) -> Result<ureq::Response, ureq::Error> {
-    let resp = ureq::request("HEAD", &url).call().or_any_status()?;
+fn do_ping(url: &str) -> Result<(u16, String), ureq::Error> {
+    let resp = ureq::request("HEAD", url).call().or_any_status()?;
     //dbg!(&resp);
-    Ok(resp)
+    let resp_output = (resp.status(), resp.get_url().to_string());
+    //dbg!(&resp_output);
+    Ok(resp_output)
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() {
     let args = Args::parse();
     //dbg!(&args);
+    let ping_forever = args.count.is_none();
 
     let url = validate_url_string_error(&args.destination).unwrap_or_else(|error| {
         eprintln!("Error parsing destination: {error:?}");
         process::exit(1);
     });
 
-    if let Err(e) = do_ping(&args.destination) {
-        eprintln!("Got error {}", e);
-        process::exit(1)
+    let mut keep_pinging = true;
+    let mut ping_counter = 1;
+
+    while keep_pinging {
+        match do_ping(&args.destination) {
+            Err(e) => {
+                eprintln!("Got error {}", e);
+                process::exit(1);
+            }
+            Ok(resp) => {
+                println!("{} from {} seq={}", resp.0, resp.1, ping_counter);
+            }
+        }
+
+        if !ping_forever && ping_counter == args.count.unwrap() {
+            keep_pinging = false;
+        } else {
+            ping_counter += 1;
+        }
     }
-    Ok(())
+    process::exit(0);
 }
