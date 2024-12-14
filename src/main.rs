@@ -1,9 +1,9 @@
-#![allow(unused_imports, unused_variables)]
+//#![allow(unused_imports, unused_variables)]
 
 // Cli app entry point
 use clap::Parser;
 use std::process;
-use ureq::{Error, OrAnyStatus, Response};
+use ureq::OrAnyStatus;
 use url::Url;
 #[derive(Parser, Debug)]
 #[command(version, about, author)]
@@ -44,7 +44,7 @@ fn main() {
     //dbg!(&args);
     let ping_forever = args.count.is_none();
 
-    let url = validate_url_string_error(&args.destination).unwrap_or_else(|error| {
+    validate_url_string_error(&args.destination).unwrap_or_else(|error| {
         eprintln!("Error parsing destination: {error:?}");
         process::exit(1);
     });

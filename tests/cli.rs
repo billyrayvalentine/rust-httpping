@@ -3,13 +3,8 @@ use predicates::prelude::*;
 use std::process::Command;
 
 #[test]
-fn test_hello() {
-    assert!(true);
-}
-
-#[test]
 fn test_args_none() {
-    let mut cmd = Command::cargo_bin("http-ping").unwrap();
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     cmd.assert().failure().code(2);
 }
 
