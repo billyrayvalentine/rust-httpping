@@ -1,10 +1,10 @@
-//#![allow(unused_imports, unused_variables)]
-
 // Cli app entry point
 use clap::Parser;
 use std::process;
+use std::time::Instant;
 use ureq::OrAnyStatus;
 use url::Url;
+
 #[derive(Parser, Debug)]
 #[command(version, about, author)]
 
@@ -31,10 +31,15 @@ fn validate_url_string_error(url: &str) -> Result<(), String> {
     }
 }
 
-fn do_ping(url: &str) -> Result<(u16, String), ureq::Error> {
+fn do_ping(url: &str) -> Result<(u16, String, u128), ureq::Error> {
+    let now = Instant::now();
     let resp = ureq::request("HEAD", url).call().or_any_status()?;
     //dbg!(&resp);
-    let resp_output = (resp.status(), resp.get_url().to_string());
+    let resp_output = (
+        resp.status(),
+        resp.get_url().to_string(),
+        now.elapsed().as_millis(),
+    );
     //dbg!(&resp_output);
     Ok(resp_output)
 }
@@ -59,7 +64,10 @@ fn main() {
                 process::exit(1);
             }
             Ok(resp) => {
-                println!("{} from {} seq={}", resp.0, resp.1, ping_counter);
+                println!(
+                    "{} from {} in {} ms seq={}",
+                    resp.0, resp.1, resp.2, ping_counter
+                );
             }
         }
 
