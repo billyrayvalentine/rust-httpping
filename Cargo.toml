@@ -1,9 +1,11 @@
 [package]
 name = "http-ping"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2021"
 description = "A simple tool to ping HTTP servers and return a HTTP code"
 authors = ["BillyRayValentine <github.com/billyrayvalentine>"]
+homepage = "https://github.com/billyrayvalentine/rust-httpping"
+license = "MIT"
 
 [dependencies]
 clap = { version = "4.5.20", features = ["derive"] }
@@ -14,3 +16,8 @@ url = "2.5.3"
 [dev-dependencies]
 assert_cmd = "2.0.16"
 predicates = "3.1.2"
+
+[package.metadata.generate-rpm]
+assets = [
+    { source = "target/release/http-ping", dest = "/usr/bin/", mode = "755" }
+]
